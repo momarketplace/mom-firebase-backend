@@ -98,7 +98,7 @@ userRouter.post('/sendverificationlink', expressAsyncHandler(async(req, res) =>{
   if (!user) {
     return res.json({ message: `Cannot sent verification link` })
   } else {
-    const link = `http://localhost:3000/confirmverification/${user._id}`
+    const link = `https://www.mosganda.com/confirmverification/${user._id}`
     //send reset link to the user's email
     let transporter = nodemailer.createTransport({
       host:"smtp.zoho.com",
@@ -117,7 +117,7 @@ userRouter.post('/sendverificationlink', expressAsyncHandler(async(req, res) =>{
         subject: 'Email verification',
        html: `  <h3 style="color:green; text-align:center;padding:10px;">Mosganda -- Email verification</h3>
                 <p style="margin:10px">Please click on the link below to verify your email.</p>
-                <a href=${link} style="text-align:center; background-color: #1c86ee; padding:10px; font-size:18px; color:white; margin:20px 10px;text-decoration:none,border-radius:10px">Verify Email</a>
+                <a href=${link} style="text-align:center; background-color: #1c86ee; padding:10px; font-size:18px; color:white; margin:10px;text-decoration:none;border-radius:10px">Verify Email</a>
                 <p style="margin:10px">This message is intended for <strong>${user.name}</strong>. If you do not know about this message, kindly ignore.</p>
             `,
     //   text: 'Hi from your Mosganda project'
@@ -319,7 +319,7 @@ userRouter.post('/forgotpassword', expressAsyncHandler(async (req, res) => {
   if (!user) {
     return res.json({ message: `No user with email: ${req.body.email} in our database.` })
   } else {
-    const link = `http://localhost:3000/resetpassword/${user._id}`
+    const link = `https://www.mosganda.com/resetpassword/${user._id}`
     //send reset link to the user's email
     let transporter = nodemailer.createTransport({
       host:"smtp.zoho.com",
@@ -338,7 +338,7 @@ userRouter.post('/forgotpassword', expressAsyncHandler(async (req, res) => {
         subject: 'Reset password',
        html: `  <h3 style="color:green; text-align:center;padding:10px;">Mosganda -- Reset Password</h3>
                 <p style="margin:10px">Please click on the link below to reset your password.</p>
-                <a href=${link} style="text-align:center; background-color: #1c86ee; padding:10px; font-size:18px; color:white; margin:20px 10px;text-decoration:none,border-radius:10px">Reset Password</a>
+                <a href=${link} style="text-align:center; background-color: #1c86ee; padding:10px; font-size:18px; color:white; margin:20px 10px;text-decoration:none;border-radius:10px">Reset Password</a>
                 <p style="margin:10px">This message is intended for <strong>${user.name}</strong>. If you do not know about this message, kindly ignore.</p>
             `,
     //   text: 'Hi from your Mosganda project'
@@ -406,9 +406,9 @@ userRouter.put('/confirmverification/:id', expressAsyncHandler(async(req,res) =>
 
 
 //delete a user
-userRouter.delete('/delete', async(req, res) =>{
-  const user = await User.findByIdAndRemove({_id: req.body.id})
-  res.json(user)
-})
+// userRouter.delete('/delete', async(req, res) =>{
+//   const user = await User.findByIdAndRemove({_id: req.body.id})
+//   res.json(user)
+// })
 
 module.exports =  userRouter;
