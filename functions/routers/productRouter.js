@@ -328,6 +328,7 @@ productRouter.put('/paidproducts', expressAsyncHandler( async(req, res) => {
     product.orderId = req.body.orderId
     product.deliveryCost = req.body.deliveryCost;
     product.service = req.body.service;
+    product.buyerId = req.body.buyerId;
   }
   const paidProduct = await product.save();
   res.json(paidProduct);
@@ -353,6 +354,17 @@ productRouter.put('/issettled', expressAsyncHandler( async(req, res) => {
   }
   const settledProduct = await product.save();
   res.json(settledProduct);
+}))
+
+//update a product when withdraw request is sent
+//so that the seller will not send another withdraw again
+productRouter.put('/hassentwithdrawrequest', isAuth, expressAsyncHandler( async(req,res) =>{
+  const product = await Product.findById(req.body.productId);
+  if(product) {
+    product.hasSentWithdrawRequest = true
+  }
+  const confirmedSent = await product.save()
+  res.json(confirmedSent)
 }))
 
 

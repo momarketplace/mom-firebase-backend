@@ -35,7 +35,8 @@ const orderShema = new mongoose.Schema({
         state: {type: String, required: true},
         country: {type: String, required: true},
         phone: { type: String, required: true },
-        deliveryFee: {type:Number}
+        deliveryFee: {type:Number},
+        buyerId: {type:String},
     },
     paymentMethod: { type: String, required: true },
     deliveryFee: { type: Number },

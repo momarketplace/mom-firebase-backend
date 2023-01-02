@@ -22,6 +22,7 @@ const productSchema = new mongoose.Schema({
     isPaid: {type: Boolean, default: false},
     isSettled: { type: Boolean, default: false },
     isSettledAt: { type: Date },
+    hasSentWithdrawRequest: { type: Boolean, default: false },
     isDelivered: { type: Boolean, default: false },
     isDeliveredAt:{type:Date},
     isPaidAt: { type: Date },
@@ -41,6 +42,7 @@ const productSchema = new mongoose.Schema({
     buyerEmail: {type: String},
     buyerPhone: {type: String},
     buyerAddress: {type: String},
+    buyerId: {type: String},
     user: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User",
