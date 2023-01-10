@@ -13,6 +13,9 @@ const { isAdmin } = require('../utils/isAdmin.js');
 
 
 
+
+
+
 // register router
 userRouter.post('/register', expressAsyncHandler( async(req, res) => {
     const user = new User({
@@ -117,7 +120,7 @@ userRouter.post('/sendverificationlink', expressAsyncHandler(async(req, res) =>{
         subject: 'Email verification',
        html: `  <h3 style="color:green; text-align:center;padding:10px;">Mosganda -- Email verification</h3>
                 <p style="margin:10px">Please click on the link below to verify your email.</p>
-                <a href=${link} style="text-align:center; background-color: #1c86ee; padding:10px; font-size:18px; color:white; margin:10px;text-decoration:none;border-radius:10px">Verify Email</a>
+                <a href=${link} style="text-align:center; background-color: #1c86ee; padding:10px; font-size:18px; color:white; margin:20px 10px;text-decoration:none,border-radius:10px">Verify Email</a>
                 <p style="margin:10px">This message is intended for <strong>${user.name}</strong>. If you do not know about this message, kindly ignore.</p>
             `,
     //   text: 'Hi from your Mosganda project'
@@ -197,6 +200,10 @@ userRouter.post('/login', expressAsyncHandler( async(req, res) => {
                 isActive: user.isActive,
                 phone: user.phone,
                 image: user.image,
+                accountName: user.accountName,
+                accountNumber: user.accountNumber,
+                bank: user. bank,
+                accountPin: user.accountPin,
                 token
             });
             return
@@ -251,8 +258,14 @@ userRouter.put('/profile', isAuth, expressAsyncHandler(async(req, res)=>{
 //update a user that created a store
 userRouter.put('/createstore', isAuth, expressAsyncHandler( async(req,res) =>{
     const user = await User.findById(req.body.user);
-    if(user){
+    if(user && !req.body.accountName){
         user.isSeller = true;
+    }
+    if(user && req.body.accountName) {
+      user.accountName = req.body.accountName || user.accountName;
+          user.accountNumber = req.body.accountNumber || user.accountNumber;
+          user.bank = req.body.bank || user. bank;
+          user.accountPin = bcrypt.hashSync(req.body.accountPin,8)  || user.accountPin;
     }
     const updatedUser = await user.save();
   res.json({
@@ -266,6 +279,10 @@ userRouter.put('/createstore', isAuth, expressAsyncHandler( async(req,res) =>{
           phone: updatedUser.phone,
           address: updatedUser.address,
           image: updatedUser.image,
+          accountName: updatedUser.accountName,
+          accountNumber: updatedUser.accountNumber,
+          bank: updatedUser. bank,
+          accountPin: updatedUser.accountPin,
           token: generateToken(updatedUser)
   })
 }))
@@ -338,7 +355,7 @@ userRouter.post('/forgotpassword', expressAsyncHandler(async (req, res) => {
         subject: 'Reset password',
        html: `  <h3 style="color:green; text-align:center;padding:10px;">Mosganda -- Reset Password</h3>
                 <p style="margin:10px">Please click on the link below to reset your password.</p>
-                <a href=${link} style="text-align:center; background-color: #1c86ee; padding:10px; font-size:18px; color:white; margin:20px 10px;text-decoration:none;border-radius:10px">Reset Password</a>
+                <a href=${link} style="text-align:center; background-color: #1c86ee; padding:10px; font-size:18px; color:white; margin:20px 10px;text-decoration:none,border-radius:10px">Reset Password</a>
                 <p style="margin:10px">This message is intended for <strong>${user.name}</strong>. If you do not know about this message, kindly ignore.</p>
             `,
     //   text: 'Hi from your Mosganda project'
@@ -403,6 +420,52 @@ userRouter.put('/confirmverification/:id', expressAsyncHandler(async(req,res) =>
   const activeUser = await user.save()
   res.json(activeUser)
 }))
+
+
+//add bank account
+userRouter.put('/bankaccount', isAuth, expressAsyncHandler(async(req, res) =>{
+  const user = await User.findById(req.body.id)
+  if(user) {
+    user.accountName = req.body.accountName || user.accountName;
+    user.accountNumber = req.body.accountNumber || user.accountNumber;
+    user.bank = req.body.bank || user.bank;
+    user.accountPin = bcrypt.hashSync(req.body.accountPin,8)  || user.accountPin;
+    
+  }
+  const updatedUser = await user.save()
+  res.json({
+    accountName: updatedUser.accountName,
+    accountNumber: updatedUser.accountNumber,
+    bank: updatedUser. bank,
+    accountPin: updatedUser.accountPin,
+    token: generateToken(updatedUser)
+  })
+}))
+
+//edit bank account details
+userRouter.put('/editaccount', isAuth, expressAsyncHandler(async(req, res) =>{
+  const user = await User.findById(req.body.id)
+
+  if(user && !bcrypt.compareSync(req.body.accountPin, user.accountPin)){
+    return res.status(401).json({
+      message:"Incorrect account pin"
+    })
+  }else{
+    user.accountName = req.body.accountName || user.accountName;
+    user.accountNumber = req.body.accountNumber || user.accountNumber;
+    user.bank = req.body.bank || user.bank;
+    user.accountPin = bcrypt.hashSync(req.body.accountPin,8)  || user.accountPin;
+  }
+
+
+
+  const updatedUser = await user.save()
+  res.json({
+    updatedUser,
+    token: generateToken(updatedUser)
+  })
+}))
+
 
 
 //delete a user

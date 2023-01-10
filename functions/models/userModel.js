@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique:true },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, default: false },
     isSeller: { type: Boolean, default: false },
@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
     phone: { type: String },
     address: { type: String },
     isBanned: { type: Boolean, default: false },
-    isActive: {type: Boolean, default: true},
+    isActive: {type: Boolean, default: false},
     image: {
       type: String,
       default:
@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema(
         ref: "Mosgandastores",
       },
     },
+    accountName: { type: String },
+    accountNumber: { type: String },
+    bank: { type: String },
+    accountPin: { type: String},
   },
   {
     timestamps: true,
